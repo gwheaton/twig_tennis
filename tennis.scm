@@ -16,4 +16,3 @@
 (load "user.scm")
 (load "opponent.scm")
 (load "referee.scm")
-
