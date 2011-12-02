@@ -8,7 +8,8 @@
 
 (within referee
   (define-state-machine officiate
-    (start (enter (titles.Say "testing"))
+    (start (enter (begin (titles.Say "testing")
+			 (send-game-state 'serve)))
 	   (messages (ExitRegionMessage
 		      (cond ((eq? $message.PhysicalObject.Name "ball")
 			     (log-message "Out of bounds:" $message.PhysicalObject)
