@@ -14,3 +14,4 @@
 (load "field.scm")
 (load "user.scm")
 (load "opponent.scm")
+(load "referee.scm")
