@@ -11,7 +11,9 @@
 (define opponent-score 0)
 
 ;; Load files here
+(load "HUDs.scm")
 (load "field.scm")
 (load "user.scm")
 (load "opponent.scm")
 (load "referee.scm")
+
