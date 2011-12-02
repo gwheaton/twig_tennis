@@ -13,12 +13,18 @@
 ;; Code for the ball
 (define-twig-object ball Ball @(5 0 9) @(0 255 50) 0.1)
 (within ball
-  (define-state-machine reset-on-score
-    (start (messages ((game-state-message 'serve)
-		      (begin (set! this.Position @(5 0 9)))))
+  (define-state-machine ball-state
+    (serve (enter (begin (set! this.Position @(5 0 0))))
+	   (messages ((game-state-message 'serve)
+		      (begin (set! this.Position @(5 0 9))))
+		     ((game-state-message 'play)
+		      (begin (goto play))))
 	   (when (<= 1.5 (distance this.Position (vector 5 0 9)))
 	     (begin (set! this.Position @(100 0 100))
-		    (send-game-state 'serve))))))
+		    (send-game-state 'serve))))
+    (play (enter (begin (referee.Say "Ball in play")))
+	  (messages ((game-state-message 'serve)
+		     (begin (goto serve)))))))
 
 ;; Code for the bounding box of the field
 (define field-bounds

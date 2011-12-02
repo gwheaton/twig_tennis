@@ -22,3 +22,13 @@
 	  (posture-force pelvis-force: 
 			 (+ up-vect down-vect left-vect right-vect))
 	  activation: 250))
+
+;; CODE FOR HITTING THE BALL
+
+;; State machine for actually implementing the signals and states of hitting the ball
+(within user
+  (define-state-machine hit
+    (normal (when (and (key-down? Keys.Space)
+		       (<= (distance ball.Position this.SpineTop.Position) 1))
+	      (begin (send-game-state 'play)
+		     (set! ball.Position @(0 0 1)))))))
