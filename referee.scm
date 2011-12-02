@@ -14,7 +14,7 @@
 			     (log-message "Out of bounds:" $message.PhysicalObject)
 			     (referee.Say (String.Format "{0} out of bounds!"
 						 $message.PhysicalObject.Name))
-			     (send-game-state 'reset))
+			     (send-game-state 'serve))
 			    ((eq? $message.PhysicalObject.Name "user")
 			     (log-message "Out of bounds:" $message.PhysicalObject)
 			     (referee.Say "Get back on the court!"))))))))

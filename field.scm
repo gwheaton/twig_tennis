@@ -15,8 +15,7 @@
 (within ball
   (define-state-machine reset-on-score
     (start (messages ((game-state-message 'serve)
-		      (begin (set! this.Position @(0 0 1))
-			     (set! scoremessage " ")))))))
+		      (begin (set! this.Position @(0 0 1))))))))
 
 ;; Code for the bounding box of the field
 (define field-bounds

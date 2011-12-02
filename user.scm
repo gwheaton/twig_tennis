@@ -9,9 +9,9 @@
 ;; CODE TO DEFINE MOVEMENT - LEAVE AS IS
 
 (within user
-	(define-signal up-vect (if (key-down? Keys.R) @(0 1 -1) @(0 0 0))))
+	(define-signal up-vect (if (key-down? Keys.R) @(0 1 -1.1) @(0 0 0))))
 (within user
-	(define-signal down-vect (if (key-down? Keys.F) @(0 0 1)  @(0 0 0))))
+	(define-signal down-vect (if (key-down? Keys.F) @(0 0 0.8)  @(0 0 0))))
 (within user
 	(define-signal right-vect (if (key-down? Keys.G) @(1 0 0) @(0 0 0))))
 (within user
