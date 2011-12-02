@@ -43,13 +43,22 @@
 
 ;; State machine for actually implementing the signals and states of hitting the ball
 (within user
-  (define-state-machine hit
+  (define-state-machine user-states
     (normal (when (and (key-down? Keys.Space)
 		       (<= (distance ball.Position this.SpineTop.Position) 1))
 	      (begin (send-game-state 'play)
-		     (goto swing))))
-    (swing (enter (begin (start racket-swing)
+		     (goto hit)))
+	    (when (and (key-down? Keys.Space)
+		       (> (distance ball.Position this.SpineTop.Position) 1))
+	      (begin (goto idle))))
+    (idle  (enter (begin (start racket-swing)
+			 (set-timeout 1.5)))
+	   (messages (TimeoutMessage
+		     (stop racket-swing)
+		     (begin (goto normal)))))
+    (hit (enter (begin (start racket-swing)
 			  (set-timeout 0.1)))
 	   (messages (TimeoutMessage
 		      (begin (set! ball.Position @(0 0 1))
-			     (stop racket-swing)))))))
+			     (stop racket-swing)
+			     (goto normal)))))))
