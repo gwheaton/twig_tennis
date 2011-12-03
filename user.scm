@@ -59,6 +59,6 @@
     (hit (enter (begin (start racket-swing)
 			  (set-timeout 0.1)))
 	   (messages (TimeoutMessage
-		      (begin (set! ball.Position @(0 0 1))
+		      (begin (set! ball.Position this.Arms.Left.End.Position)
 			     (stop racket-swing)
 			     (goto normal)))))))
