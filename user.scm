@@ -3,9 +3,8 @@
 ; User movement using R,D,F,G as W,A,S,D replacement due to S being used by Twig
 ; Movement based on posture forces due to lack of walking system, player levitates
 
-(define-twig-object user Child 1 @(4 0 9))
+(define-twig-object user Child 1 @(4 0 9) @(0 0 -1))
 (set! user.Color Color.Blue)
-(set! user.FacingDirection @(0 0 -1))
 
 ;; CODE TO DEFINE MOVEMENT - LEAVE AS IS
 
@@ -30,11 +29,11 @@
     (limb-command end-acceleration:
 		  (* (- hand-position arm.End.Position)
 		     300)))
-  (define-left-arm-behavior racket-swing
-    (move-hand-to this.Arms.Left
-		  (+ this.Arms.Left.Root.Position
+  (define-right-arm-behavior racket-swing
+    (move-hand-to this.Arms.Right
+		  (+ this.Arms.Right.Root.Position
 		     (vector 0.05
-			     this.Arms.Left.Length
+			     this.Arms.Right.Length
 			     0)))
     activation: 0))
   
@@ -45,7 +44,7 @@
 (within user
   (define-state-machine user-states
     (normal (when (and (key-down? Keys.Space)
-		       (<= (distance ball.Position this.SpineTop.Position) 1))
+		       (<= (distance ball.Position this.SpineTop.Position) 1.2))
 	      (begin (send-game-state 'play)
 		     (goto hit)))
 	    (when (and (key-down? Keys.Space)
@@ -59,6 +58,6 @@
     (hit (enter (begin (start racket-swing)
 			  (set-timeout 0.1)))
 	   (messages (TimeoutMessage
-		      (begin (set! ball.Position this.Arms.Left.End.Position)
+		      (begin (set! ball.Position this.Arms.Right.End.Position)
 			     (stop racket-swing)
 			     (goto normal)))))))
