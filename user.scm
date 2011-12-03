@@ -54,8 +54,8 @@
     (idle  (enter (begin (start racket-swing)
 			 (set-timeout 1.5)))
 	   (messages (TimeoutMessage
-		     (stop racket-swing)
-		     (begin (goto normal)))))
+		     (begin (stop racket-swing)
+			    (goto normal)))))
     (hit (enter (begin (start racket-swing)
 			  (set-timeout 0.1)))
 	   (messages (TimeoutMessage

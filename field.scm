@@ -23,8 +23,13 @@
 	     (begin (set! this.Position @(100 0 100))
 		    (send-game-state 'serve))))
     (play (enter (begin (referee.Say "Ball in play")))
-	  (messages ((game-state-message 'serve)
-		     (begin (goto serve)))))))
+	  (when (<= this.Position.Y 0.6)
+	    (begin (send-game-state 'dead)
+		   (goto dead))))
+    (dead (enter (set-timeout 5))
+	  (messages (TimeoutMessage
+		     (begin (send-game-state 'serve)
+			    (goto serve)))))))
 
 ;; Code for the bounding box of the field
 (define field-bounds

@@ -8,14 +8,22 @@
 
 (within referee
   (define-state-machine officiate
-    (start (enter (begin (titles.Say "testing")
-			 (send-game-state 'serve)))
-	   (messages (ExitRegionMessage
+    (serve (enter (begin (titles.Say "testing")))
+	   (messages ((game-state-message 'play)
+		      (begin (goto play)))
+		     (ExitRegionMessage
+		      (cond ((eq? $message.PhysicalObject.Name "user")
+			     (referee.Say "Go serve the ball!"))))))
+    (play  (messages (ExitRegionMessage
 		      (cond ((eq? $message.PhysicalObject.Name "ball")
 			     (log-message "Out of bounds:" $message.PhysicalObject)
 			     (referee.Say (String.Format "{0} out of bounds!"
 						 $message.PhysicalObject.Name))
-			     (send-game-state 'serve))
-			    ((eq? $message.PhysicalObject.Name "user")
-			     (log-message "Out of bounds:" $message.PhysicalObject)
-			     (referee.Say "Get back on the court!"))))))))
+			     ;and update score based on who last hit(against) (global var?)
+			     (send-game-state 'serve))))
+		     ((game-state-message 'serve)
+		      (begin (goto serve)))
+		     ((game-state-message 'dead)
+		      (begin (referee.Say "Dead ball!")
+			     ;and update score based on who last hit it(for) (global var?)
+			     ))))))
