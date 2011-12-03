@@ -31,6 +31,10 @@
 		     (begin (send-game-state 'serve)
 			    (goto serve)))))))
 
+;; Code for the force controller for hitting the ball
+;;(define controller
+  ;;(new ForceController "controller" ball.Nodes ))
+
 ;; Code for the bounding box of the field
 (define field-bounds
   (new-component SpatialTrigger

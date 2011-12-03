@@ -13,7 +13,12 @@
 		      (begin (goto play)))
 		     (ExitRegionMessage
 		      (cond ((eq? $message.PhysicalObject.Name "user")
-			     (referee.Say "Go serve the ball!"))))))
+			     (referee.Say "Go serve the ball!"))
+			    ((eq? $message.PhysicalObject.Name "ball")
+			     (log-message "Out of bounds:" $message.PhysicalObject)
+			     (referee.Say (String.Format "{0} out of bounds!"
+							 $message.PhysicalObject.Name))
+			     (send-game-state 'serve))))))
     (play  (messages (ExitRegionMessage
 		      (cond ((eq? $message.PhysicalObject.Name "ball")
 			     (log-message "Out of bounds:" $message.PhysicalObject)
