@@ -26,7 +26,8 @@
 	     (begin (set! this.Position @(100 0 100))
 		    (send-game-state 'serve))))
     (play (enter (begin (referee.Say "Ball in play")
-			(set! switchValue 100)))
+			(set! switchValue 100)
+			))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)
 		   (goto dead))))
@@ -39,7 +40,7 @@
 ;; Code for the force controller for hitting the ball
 (within ball
   (define-signal time (integral 3))
-  (define-force-controller fly ball
+  (define-force-controller fly ball.Nodes
     (* 0.2
        (vector (sin time)
 	       (sin time)
