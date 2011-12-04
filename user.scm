@@ -9,7 +9,7 @@
 ;; CODE TO DEFINE MOVEMENT - LEAVE AS IS
 
 (within user
-	(define-signal up-vect (if (key-down? Keys.R) @(0 0 -1.1) @(0 0 0))))
+	(define-signal up-vect (if (key-down? Keys.R) @(0 0 -1.2) @(0 0 0))))
 (within user
 	(define-signal down-vect (if (key-down? Keys.F) @(0 0 0.8)  @(0 0 0))))
 (within user
@@ -65,7 +65,8 @@
 		     (begin (stop racket-swing)
 			    (goto normal)))))
     (hit (enter (begin (start racket-swing)
-			  (set-timeout 0.1)))
+			  (set-timeout 0.1)
+			  (set! lasthit 0)))
 	   (messages (TimeoutMessage
 		      (begin (set! ball.Position this.Arms.Right.End.Position)
 			     (stop racket-swing)

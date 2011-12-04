@@ -6,9 +6,13 @@
 ;; Listen to the bounding box of the field
 (field-bounds.Listeners.Add referee)
 
+(define lasthit 0) ;; who last hit for scoring, 0 for user 1 for AI
+
 (within referee
   (define-state-machine officiate
-    (serve (enter (begin (titles.Say "testing")))
+    (serve (enter (begin (titles.Say (String.Format "User: {0} AI: {1}"
+						     user-score
+						     opponent-score))))
 	   (messages ((game-state-message 'play)
 		      (begin (goto play)))
 		     (ExitRegionMessage
@@ -24,11 +28,15 @@
 			     (log-message "Out of bounds:" $message.PhysicalObject)
 			     (referee.Say (String.Format "{0} out of bounds!"
 						 $message.PhysicalObject.Name))
-			     ;and update score based on who last hit(against) (global var?)
+			     (if (= lasthit 0)
+				 (set! opponent-score (+ 1 opponent-score))
+				 (set! user-score (+ 1 user-score)))
 			     (send-game-state 'serve))))
 		     ((game-state-message 'serve)
 		      (begin (goto serve)))
 		     ((game-state-message 'dead)
 		      (begin (referee.Say "Dead ball!")
-			     ;and update score based on who last hit it(for) (global var?)
-			     ))))))
+			     (if (> ball.Position.Z 0)
+				 (set! opponent-score (+ 1 opponent-score))
+				 (set! user-score (+ 1 user-score)))
+			     (send-game-state 'serve)))))))
