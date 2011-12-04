@@ -16,12 +16,21 @@
 	(define-signal right-vect (if (key-down? Keys.G) @(1 0 0) @(0 0 0))))
 (within user
 	(define-signal left-vect (if (key-down? Keys.D) @(-1 0 0) @(0 0 0))))
+(within user
+	(define-signal left-turn-vect (if (key-down? Keys.J) (* -1 user.PelvisRight) @(0 0 0))))
+(within user
+	(define-signal right-turn-vect (if (key-down? Keys.K) user.PelvisRight @(0 0 0))))
 
 (within user
 	(define-posture-behavior movement
 	  (posture-force pelvis-force: 
 			 (+ up-vect down-vect left-vect right-vect))
 	  activation: 250))
+
+(within user
+	(define-locomotion-behavior movement
+	  (+ right-turn-vect left-turn-vect)
+	  activation: 1))
 
 ;; CODE FOR HIT BEHAVIOR
 (within user
