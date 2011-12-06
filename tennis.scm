@@ -12,9 +12,9 @@
 
 ;; Load files here
 (load "HUDs.scm")
-(load "field.scm")
 (load "user.scm")
 (load "opponent.scm")
+(load "field.scm")
 (load "referee.scm")
 
 ;; Camera

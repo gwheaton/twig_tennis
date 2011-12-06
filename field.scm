@@ -11,12 +11,11 @@
 (define field-depth 20)
 
 ;; Code for the ball
-(define-twig-object ball Ball @(5 0 9) @(0 255 50) 0.1)
 (within ball
   (define-signal time (integral 3))
   ;; Force controller
   (define-force-controller fly ball
-    @(0 0.1 -0.1)
+    (+ user.FacingDirection @(0 0.6 0))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(5 0 0))
@@ -30,7 +29,7 @@
 		    (send-game-state 'serve))))
     (play (enter (begin (referee.Say "Ball in play")
 			(start fly)
-			(set-timeout 1)
+			(set-timeout 0.1)
 			))
 	  (messages (TimeoutMessage
 		     (stop fly)))

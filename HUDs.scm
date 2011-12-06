@@ -8,3 +8,7 @@
 ;;; A text overlay for displaying announcements
 (define titles (new-component TitleScreen))
 (titles.Transparent)
+
+
+;; Global declarations
+(define-twig-object ball Ball @(5 0 9) @(0 255 50) 0.1)
