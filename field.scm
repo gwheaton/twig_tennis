@@ -13,11 +13,14 @@
 ;; Code for the ball
 (define-twig-object ball Ball @(5 0 9) @(0 255 50) 0.1)
 (within ball
-  (define switchValue 0)
-  (define-signal switch switchValue) ;; for force controller
+  (define-signal time (integral 3))
+  ;; Force controller
+  (define-force-controller fly ball
+    @(0 0.1 -0.1)
+    call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(5 0 0))
-			 (set! switchValue 0)))
+			 (stop fly)))
 	   (messages ((game-state-message 'serve)
 		      (begin (set! this.Position @(5 0 9))))
 		     ((game-state-message 'play)
@@ -26,26 +29,19 @@
 	     (begin (set! this.Position @(100 0 100))
 		    (send-game-state 'serve))))
     (play (enter (begin (referee.Say "Ball in play")
-			(set! switchValue 100)
+			(start fly)
+			(set-timeout 1)
 			))
+	  (messages (TimeoutMessage
+		     (stop fly)))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)
 		   (goto dead))))
     (dead (enter (begin (set-timeout 5)
-			(set! switchValue 0)))
+			(stop fly)))
 	  (messages (TimeoutMessage
 		     (begin (send-game-state 'serve)
 			    (goto serve)))))))
-
-;; Code for the force controller for hitting the ball
-(within ball
-  (define-signal time (integral 3))
-  (define-force-controller fly ball.Nodes
-    (* 0.2
-       (vector (sin time)
-	       (sin time)
-	       (cos time)))
-    activation: switch))
 
 ;; Code for the bounding box of the field
 (define field-bounds
