@@ -10,6 +10,8 @@
 (define user-score 0)
 (define opponent-score 0)
 
+(define-twig-object ball Ball @(4 0 7) @(0 255 50) 0.1)
+
 ;; Load files here
 (load "HUDs.scm")
 (load "user.scm")
@@ -18,7 +20,5 @@
 (load "referee.scm")
 
 ;; Camera
-(set! TwigGame.CurrentGame.CameraPosition @(0 3 18))
-
-
+(set! TwigGame.CurrentGame.CameraPosition @(0 3.5 15))
 

@@ -3,7 +3,7 @@
 ; User movement using R,D,F,G as W,A,S,D replacement due to S being used by Twig
 ; Movement based on posture forces due to lack of walking system, player levitates
 
-(define-twig-object user Child 1 @(4 0 9) @(0 0 -1))
+(define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
 (set! user.Color Color.Blue)
 
 ;; CODE TO DEFINE MOVEMENT - LEAVE AS IS
@@ -69,6 +69,6 @@
 			  (set! lasthit 0)))
 	   (messages (TimeoutMessage
 		      (begin ;;(set! ball.Position (+ this.Arms.Right.End.Position
-						    ;;@(0 1 -1)))
+						   ;; @(0 1 -1)))
 			     (stop racket-swing)
 			     (goto normal)))))))
