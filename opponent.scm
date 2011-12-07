@@ -29,15 +29,23 @@
    call-activation: 1)
  (define-posture-behavior pursue-ball-lob
    (posture-force pelvis-force:
-		  (- user.FacingDirection this.Position))
+		 ;; (* (- this.Position userpos)
+		   ;;  (/ (magnitude (cross (- this.Position userpos) userfd))
+		;;	(* (magnitude (- this.Position userpos))
+		;;	   (magnitude userfd)))))
+		  (* 100 (magnitude (cross userfd (- this.Position userpos)))))
    call-activation: 1)
  (define-posture-behavior pursue-ball-med
    (posture-force pelvis-force:
-		  (- user.FacingDirection this.Position))
+		  (* 200 (- (+ userpos
+			       (* userfd -11))
+			    this.Position)))
    call-activation: 1)
  (define-posture-behavior pursue-ball-hard
    (posture-force pelvis-force:
-		  (- user.FacingDirection this.Position))
+		  (* 200 (- (+ userpos
+			       (* userfd -13))
+			    this.Position)))
    call-activation: 1))
 
 
@@ -56,9 +64,8 @@
 			    (start pursue-ball-lob)
 			    (if (= hitstrength 1)
 				(start pursue-ball-med)
-				(start pursue-ball-hard)))
-			(user.Say (String.Format "{0}"  hitstrength))))
-	  (when (<= (distance ball.Position this.SpineTop.Position) 2)
+				(start pursue-ball-hard)))))
+	  (when (<= (distance ball.Position this.SpineTop.Position) 1.8)
 	    (begin
 	           (if (running? pursue-ball-lob)
 				(stop pursue-ball-lob)

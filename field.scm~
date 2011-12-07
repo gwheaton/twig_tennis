@@ -30,23 +30,23 @@
 (within ball
   ;; Force controllers for user hit serves
   (define-force-controller userhitlobS ball
-    (+ user.FacingDirection (vector 0 0.9 -0.8))
+    (+ user.FacingDirection (vector -0.1 0.9 -0.8))
     call-activation: 1)
   (define-force-controller userhitmedS ball
-    (+ user.FacingDirection (vector 0 0.7 -1.5))
+    (+ user.FacingDirection (vector -0.15 0.7 -1.5))
     call-activation: 1)
   (define-force-controller userhithardS ball
-    (+ user.FacingDirection (vector 0 0.5 -2.5))
+    (+ user.FacingDirection (vector -0.2 0.5 -2.5))
     call-activation: 1)
   ;; User hit normals
   (define-force-controller userhitlob ball
-    (+ user.FacingDirection (vector 0 2 -2))
+    (+ user.FacingDirection (vector -0.1 2 -2))
     call-activation: 1)
   (define-force-controller userhitmed ball
-    (+ user.FacingDirection (vector 0 1.5 -3))
+    (+ user.FacingDirection (vector -0.15 1.5 -3))
     call-activation: 1)
   (define-force-controller userhithard ball
-    (+ user.FacingDirection (vector 0 1 -4))
+    (+ user.FacingDirection (vector -0.2 1 -4))
     call-activation: 1)
   ;; Force controllers for AI hits
   (define-force-controller AIhitlob ball
@@ -78,11 +78,6 @@
 			    (if (< power 1)
 				(start userhitmedS)
 				(start userhithardS)))
-			(if (< power 0.3)
-			    (set! hitstrength 0)
-			    (if (< power 1)
-				(set! hitstrength 1)
-				(set! hitstrength 2)))
 			(set-timeout 0.05)))
 	  (messages (TimeoutMessage
 		      (begin (if (running? userhitlob)
@@ -102,15 +97,10 @@
 				     (stop userhithardS)))))
 		    ((game-state-message 'userhit)
 		     (begin (if (< power 0.3)
-				(start userhitlob)
-				(if (< power 1)
-				    (start userhitmed)
-				    (start userhithard)))
-			    (if (< power 0.3)
-				(set! hitstrength 0)
-				(if (< power 1)
-				    (set! hitstrength 1)
-				    (set! hitstrength 2)))
+			    (start userhitlob)
+			    (if (< power 1)
+				(start userhitmed)
+				(start userhithard)))
 			    (set-timeout 0.05)))
 		    ((game-state-message 'AIhit)
 		     (begin ;; code for calculating which one to use here, globals vars set by opponent when he sends 'AIhit?
