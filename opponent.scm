@@ -2,6 +2,7 @@
 
 ;;(define-twig-object opponent Child 1 @(0 0 -4))
 (set! opponent.Color Color.Red)
+(set! opponent.MaxSpeed 30.0)
 
 ;; CODE FOR HIT BEHAVIOR
 (within opponent
@@ -26,7 +27,7 @@
     (approach ball-position)
     call-activation: 1)
  (define-locomotion-behavior backtocenter
-   (approach @(0 0 -4))
+   (approach @(0 0 -4.5))
    call-activation: 1))
 
 
@@ -36,9 +37,13 @@
     (wait (enter (begin (start backtocenter)))
 	  (messages ((game-state-message 'userhit)
 		     (goto move)))
-	  (exit (begin (stop backtocenter))))
+	  (when (<= (distance this.Position @(0 0 -4.5)) 0.5)
+	    (begin (if (running? backtocenter)
+		       (stop backtocenter))))
+	  (exit (begin (if (running? backtocenter)
+			   (stop backtocenter)))))
     (move (enter (begin (start pursue-ball)))
-	  (when (<= (distance ball.Position this.SpineTop.Position) 2)
+	  (when (<= (distance ball.Position this.SpineTop.Position) 1.7)
 	    (begin (if (running? pursue-ball)
 		       (stop pursue-ball))
 		   (send-game-state 'AIhit)

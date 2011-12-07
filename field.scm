@@ -50,13 +50,13 @@
     call-activation: 1)
   ;; Force controllers for AI hits
   (define-force-controller AIhitlob ball
-    (+ @(0 0 1) (vector 0.1 2 2))
+    (+ @(0 0 1) (vector 0.1 2 2.5))
     call-activation: 1)
   (define-force-controller AIhitmed ball
-    (+ @(0 0 1) (vector 0.15 1.5 3))
+    (+ @(0 0 1) (vector 0.15 1.5 3.5))
     call-activation: 1)
   (define-force-controller AIhithard ball
-    (+ @(0 0 1) (vector 0.2 1 4))
+    (+ @(0 0 1) (vector 0.2 1 4.5))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))

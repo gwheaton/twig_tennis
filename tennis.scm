@@ -13,7 +13,7 @@
 ;; Global declarations, vars
 (define-twig-object ball Ball @(4 0 7) @(0 255 50) 0.1)
 (define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
-(define-twig-object opponent Child 1 @(0 0 -4))
+(define-twig-object opponent Child 1 @(0 0 -4.5))
 
 (within ball
   (define power 0))
@@ -26,4 +26,4 @@
 (load "referee.scm")
 
 ;; Camera
-(set! TwigGame.CurrentGame.CameraPosition @(0 3.5 15))
+(set! TwigGame.CurrentGame.CameraPosition @(0 3 15))

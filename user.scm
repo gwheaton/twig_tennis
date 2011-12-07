@@ -83,7 +83,7 @@
   ;;(define-signal keyjustup (key-just-up? Keys.Space))
   (define-state-machine user-states
     (normal (when (and (key-just-up? Keys.Space)
-		       (<= (distance ball.Position this.SpineTop.Position) 1.2))
+		       (<= (distance ball.Position this.SpineTop.Position) 1.5))
 	      (begin ;;(set! recordedpower greatestpower)
 		     ;;(user.Say (String.Format "{0}" recordedpower.Value))
 		     (send-game-state 'userhit)
