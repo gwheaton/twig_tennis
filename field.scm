@@ -30,7 +30,7 @@
 (within ball
   ;; Force controller
   (define-force-controller fly ball
-    (+ user.FacingDirection @(-0.2 0.4 0))
+    (+ user.FacingDirection (vector -0.2 0.4 0))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))

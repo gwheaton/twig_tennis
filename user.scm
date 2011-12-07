@@ -3,23 +3,45 @@
 ; User movement using R,D,F,G as W,A,S,D replacement due to S being used by Twig
 ; Movement based on posture forces due to lack of walking system, player levitates
 
-(define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
+;;(define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
 (set! user.Color Color.Blue)
 
 ;; CODE TO DEFINE MOVEMENT - LEAVE AS IS
 
 (within user
-	(define-signal up-vect (if (key-down? Keys.R) @(0 0 -1.2) @(0 0 0))))
+	(define-signal up-vect (if (key-down? Keys.R)
+				   (vector 0 0 (if (key-down? Keys.Space)
+						   -0.6
+						   -1))
+				   @(0 0 0))))
 (within user
-	(define-signal down-vect (if (key-down? Keys.F) @(0 0 0.8)  @(0 0 0))))
+	(define-signal down-vect (if (key-down? Keys.F) 
+				     (vector 0 0 (if (key-down? Keys.Space)
+						     0.6
+						     1)) 
+				     @(0 0 0))))
 (within user
-	(define-signal right-vect (if (key-down? Keys.G) @(1 0 0) @(0 0 0))))
+	(define-signal right-vect (if (key-down? Keys.G) 
+				      (vector (if (key-down? Keys.Space)
+						  0.6
+						  1)
+					      0 0)
+				      @(0 0 0))))
 (within user
-	(define-signal left-vect (if (key-down? Keys.D) @(-1 0 0) @(0 0 0))))
+	(define-signal left-vect (if (key-down? Keys.D)
+				     (vector (if (key-down? Keys.Space)
+						 -0.6
+						 -1)
+					     0 0) 
+				     @(0 0 0))))
 (within user
-	(define-signal left-turn-vect (if (key-down? Keys.J) (* -1 user.PelvisRight) @(0 0 0))))
+	(define-signal left-turn-vect (if (key-down? Keys.J) 
+					  (* -1 user.PelvisRight) 
+					  @(0 0 0))))
 (within user
-	(define-signal right-turn-vect (if (key-down? Keys.K) user.PelvisRight @(0 0 0))))
+	(define-signal right-turn-vect (if (key-down? Keys.K) 
+					   user.PelvisRight
+					   @(0 0 0))))
 
 (within user
 	(define-posture-behavior movement
@@ -51,16 +73,24 @@
 
 ;; State machine for actually implementing the signals and states of hitting the ball
 (within user
+  (define-signal power false)
+  (define-signal powertime (true-time power))
   (define-state-machine user-states
-    (normal (when (and (key-down? Keys.Space)
+    (normal (when (and (key-just-up? Keys.Space)
 		       (<= (distance ball.Position this.SpineTop.Position) 1.2))
 	      (begin (send-game-state 'play)
+		     (set! power false)
 		     (goto hit)))
-	    (when (and (key-down? Keys.Space)
+	    (when (and (key-just-up? Keys.Space)
 		       (> (distance ball.Position this.SpineTop.Position) 1))
-	      (begin (goto idle))))
+	      (begin (set! power false)
+		     (goto idle)))
+	    (when (key-just-down? Keys.Space)
+	      (begin (set! power true)
+		     ;;(user.Say (String.Format "{0}" power))
+		     )))
     (idle  (enter (begin (start racket-swing)
-			 (set-timeout 1.5)))
+			 (set-timeout 1)))
 	   (messages (TimeoutMessage
 		     (begin (stop racket-swing)
 			    (goto normal)))))
