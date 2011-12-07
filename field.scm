@@ -28,33 +28,43 @@
 
 ;; Code for the ball
 (within ball
-  ;; Force controllers for user hits
+  ;; Force controllers for user hit serves
+  (define-force-controller userhitlobS ball
+    (+ user.FacingDirection (vector -0.1 0.9 -0.8))
+    call-activation: 1)
+  (define-force-controller userhitmedS ball
+    (+ user.FacingDirection (vector -0.15 0.7 -1.5))
+    call-activation: 1)
+  (define-force-controller userhithardS ball
+    (+ user.FacingDirection (vector -0.2 0.5 -2.5))
+    call-activation: 1)
+  ;; User hit normals
   (define-force-controller userhitlob ball
-    (+ user.FacingDirection (vector -0.1 0.35 0.2))
+    (+ user.FacingDirection (vector -0.1 2 -2))
     call-activation: 1)
   (define-force-controller userhitmed ball
-    (+ user.FacingDirection (vector -0.15 0.3 -0.1))
+    (+ user.FacingDirection (vector -0.15 1.5 -3))
     call-activation: 1)
   (define-force-controller userhithard ball
-    (+ user.FacingDirection (vector -0.2 0.25 -0.3))
+    (+ user.FacingDirection (vector -0.2 1 -4))
     call-activation: 1)
   ;; Force controllers for AI hits
   (define-force-controller AIhitlob ball
-    (+ opponent.FacingDirection (vector 0.1 0.35 -0.2))
+    (+ @(0 0 1) (vector 0.1 2 2))
     call-activation: 1)
   (define-force-controller AIhitmed ball
-    (+ opponent.FacingDirection (vector 0.15 0.3 0.1))
+    (+ @(0 0 1) (vector 0.15 1.5 3))
     call-activation: 1)
   (define-force-controller AIhithard ball
-    (+ opponent.FacingDirection (vector 0.2 0.25 0.3))
+    (+ @(0 0 1) (vector 0.2 1 4))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))
-			 (if (running? userhitlob)
-			     (stop userhitlob)
-			     (if (running? userhitmed)
-				 (stop userhitmed)
-				 (stop userhithard)))))
+			 (if (running? userhitlobS)
+			     (stop userhitlobS)
+			     (if (running? userhitmedS)
+				 (stop userhitmedS)
+				 (stop userhithardS)))))
 	   (messages ((game-state-message 'serve)
 		      (begin (set! this.Position @(4 0 7))))
 		     ((game-state-message 'userhit)
@@ -64,11 +74,11 @@
 		    (send-game-state 'serve))))
     (play (enter (begin (referee.Say "Ball in play")
 			(if (< power 0.3)
-			    (start userhitlob)
+			    (start userhitlobS)
 			    (if (< power 1)
-				(start userhitmed)
-				(start userhithard)))
-			(set-timeout 0.1)))
+				(start userhitmedS)
+				(start userhithardS)))
+			(set-timeout 0.05)))
 	  (messages (TimeoutMessage
 		      (begin (if (running? userhitlob)
 				 (stop userhitlob)
@@ -79,18 +89,23 @@
 				 (stop AIhitlob)
 				 (if (running? AIhitmed)
 				     (stop AIhitmed)
-				     (stop AIhithard)))))
+				     (stop AIhithard)))
+			     (if (running? userhitlobS)
+				 (stop userhitlobS)
+				 (if (running? userhitmedS)
+				     (stop userhitmedS)
+				     (stop userhithardS)))))
 		    ((game-state-message 'userhit)
 		     (begin (if (< power 0.3)
 			    (start userhitlob)
 			    (if (< power 1)
 				(start userhitmed)
 				(start userhithard)))
-			    (set-timeout 0.1)))
+			    (set-timeout 0.05)))
 		    ((game-state-message 'AIhit)
 		     (begin ;; code for calculating which one to use here, globals vars set by opponent when he sends 'AIhit?
 		       (start AIhitlob)
-		       (set-timeout 0.1))))
+		       (set-timeout 0.05))))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)
 		   (goto dead))))

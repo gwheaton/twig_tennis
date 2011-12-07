@@ -27,4 +27,3 @@
 
 ;; Camera
 (set! TwigGame.CurrentGame.CameraPosition @(0 3.5 15))
-

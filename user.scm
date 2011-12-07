@@ -11,27 +11,27 @@
 (within user
 	(define-signal up-vect (if (key-down? Keys.R)
 				   (vector 0 0 (if (key-down? Keys.Space)
-						   -0.6
-						   -1))
+						   -0.8
+						   -1.5))
 				   @(0 0 0))))
 (within user
 	(define-signal down-vect (if (key-down? Keys.F) 
 				     (vector 0 0 (if (key-down? Keys.Space)
-						     0.6
-						     1)) 
+						     0.8
+						     1.5)) 
 				     @(0 0 0))))
 (within user
 	(define-signal right-vect (if (key-down? Keys.G) 
 				      (vector (if (key-down? Keys.Space)
-						  0.6
-						  1)
+						  0.8
+						  1.5)
 					      0 0)
 				      @(0 0 0))))
 (within user
 	(define-signal left-vect (if (key-down? Keys.D)
 				     (vector (if (key-down? Keys.Space)
-						 -0.6
-						 -1)
+						 -0.8
+						 -1.5)
 					     0 0) 
 				     @(0 0 0))))
 (within user
