@@ -2,7 +2,7 @@
 (define field-width 10)
 (define field-depth 16)
 
-(new-component Wall @(0 0 0) field-width 0.5 0.1) ;; the net
+(new-component Wall @(0 0 0) field-width 0.8 0.1) ;; the net
 
 (new-component Wall @(5 0 -8) 
 	       @(5 0 8) 
@@ -30,13 +30,13 @@
 (within ball
   ;; Force controllers
   (define-force-controller userhitlob ball
-    (+ user.FacingDirection (vector -0.1 0.3 0.15))
+    (+ user.FacingDirection (vector -0.1 0.35 0.2))
     call-activation: 1)
   (define-force-controller userhitmed ball
-    (+ user.FacingDirection (vector -0.15 0.2 -0.2))
+    (+ user.FacingDirection (vector -0.15 0.3 -0.1))
     call-activation: 1)
   (define-force-controller userhithard ball
-    (+ user.FacingDirection (vector -0.2 0.1 -0.6))
+    (+ user.FacingDirection (vector -0.2 0.25 -0.3))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))
