@@ -26,4 +26,4 @@
 (load "referee.scm")
 
 ;; Camera
-(set! TwigGame.CurrentGame.CameraPosition @(0 3 15))
+(set! TwigGame.CurrentGame.CameraPosition @(0 5 16))
