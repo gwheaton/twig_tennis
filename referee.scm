@@ -13,7 +13,7 @@
     (serve (enter (begin (titles.Say (String.Format "User: {0} AI: {1}"
 						     user-score
 						     opponent-score))))
-	   (messages ((game-state-message 'play)
+	   (messages ((game-state-message 'userhit)
 		      (begin (goto play)))
 		     (ExitRegionMessage
 		      (begin (if (eq? $message.PhysicalObject.Name "user")
@@ -21,6 +21,7 @@
 			     (send-game-state 'serve)))))
     (play  (messages (ExitRegionMessage
 		      (cond ((eq? $message.PhysicalObject.Name "ball")
+			     (send-game-state 'outofbounds)
 			     (log-message "Out of bounds:" $message.PhysicalObject)
 			     (referee.Say (String.Format "{0} out of bounds!"
 						 $message.PhysicalObject.Name))
