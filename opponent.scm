@@ -20,14 +20,24 @@
 
 ;; LOCOMOTION
 (within opponent
-  (define-signal ball-position ball.Position)
-  (define-signal-procedure (approach target-position)
-   (- target-position position))
  (define-locomotion-behavior pursue-ball
-    (approach ball-position)
+    (+ (- ball.Position this.Position)
+       (- ball.Position this.Position))
     call-activation: 1)
  (define-locomotion-behavior backtocenter
-   (approach @(0 0 -4.5))
+   (- @(0 0 -4.5) this.Position)
+   call-activation: 1)
+ (define-posture-behavior pursue-ball-lob
+   (posture-force pelvis-force:
+		  (- user.FacingDirection this.Position))
+   call-activation: 1)
+ (define-posture-behavior pursue-ball-med
+   (posture-force pelvis-force:
+		  (- user.FacingDirection this.Position))
+   call-activation: 1)
+ (define-posture-behavior pursue-ball-hard
+   (posture-force pelvis-force:
+		  (- user.FacingDirection this.Position))
    call-activation: 1))
 
 
@@ -42,19 +52,35 @@
 		       (stop backtocenter))))
 	  (exit (begin (if (running? backtocenter)
 			   (stop backtocenter)))))
-    (move (enter (begin (start pursue-ball)))
-	  (when (<= (distance ball.Position this.SpineTop.Position) 1.7)
-	    (begin (if (running? pursue-ball)
-		       (stop pursue-ball))
+    (move (enter (begin (if (= hitstrength 0)
+			    (start pursue-ball-lob)
+			    (if (= hitstrength 1)
+				(start pursue-ball-med)
+				(start pursue-ball-hard)))
+			(user.Say (String.Format "{0}"  hitstrength))))
+	  (when (<= (distance ball.Position this.SpineTop.Position) 2)
+	    (begin
+	           (if (running? pursue-ball-lob)
+				(stop pursue-ball-lob)
+				(if (running? pursue-ball-med)
+				    (stop pursue-ball-med)
+				    (stop pursue-ball-hard)))
 		   (send-game-state 'AIhit)
 		   (goto hit)))
 	  (messages ((game-state-message 'dead)
-		     (begin (if (running? pursue-ball)
-				(stop pursue-ball))
+		     (begin (if (running? pursue-ball-lob)
+				(stop pursue-ball-lob)
+				(if (running? pursue-ball-med)
+				    (stop pursue-ball-med)
+				    (stop pursue-ball-hard)))
 			    (goto wait)))
 		    ((game-state-message 'outofbounds)
-		     (begin (if (running? pursue-ball)
-				(stop pursue-ball))
+		     (begin
+                            (if (running? pursue-ball-lob)
+				(stop pursue-ball-lob)
+				(if (running? pursue-ball-med)
+				    (stop pursue-ball-med)
+				    (stop pursue-ball-hard)))
 			    (goto wait)))))
     (hit (enter (begin (start racket-swing)
 			  (set-timeout 0.1)

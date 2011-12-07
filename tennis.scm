@@ -15,6 +15,8 @@
 (define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
 (define-twig-object opponent Child 1 @(0 0 -4.5))
 
+(define hitstrength 0) ;; for AI, 0 if lob, 1 if med, 2 if hard
+
 (within ball
   (define power 0))
 
