@@ -73,22 +73,25 @@
 
 ;; State machine for actually implementing the signals and states of hitting the ball
 (within user
-  (define-signal power false)
-  (define-signal powertime (true-time power))
+  ;;(define-signal power (signal-or (key-down? Keys.Space) (key-just-up? Keys.Space)));; for the power the player hits ball with
+  ;;(define-signal power-off-for-a-while
+   ;; (> (true-time (not power))
+       ;;1))
+  ;;(define-signal powertime (true-time 
+			    ;;(not power-off-for-a-while)))
+  ;;(define-signal greatestpower (latch powertime power))
+  (define-signal keyjustup (key-just-up? Keys.Space))
   (define-state-machine user-states
     (normal (when (and (key-just-up? Keys.Space)
 		       (<= (distance ball.Position this.SpineTop.Position) 1.2))
-	      (begin (send-game-state 'play)
-		     (set! power false)
+	      (begin ;;(set! recordedpower greatestpower)
+		     ;;(user.Say (String.Format "{0}" recordedpower.Value))
+		     (send-game-state 'play)
 		     (goto hit)))
 	    (when (and (key-just-up? Keys.Space)
-		       (> (distance ball.Position this.SpineTop.Position) 1))
-	      (begin (set! power false)
-		     (goto idle)))
-	    (when (key-just-down? Keys.Space)
-	      (begin (set! power true)
-		     ;;(user.Say (String.Format "{0}" power))
-		     )))
+		       (> (distance ball.Position this.SpineTop.Position) 1.2))
+	      (begin ;;(set! recordedpower 0)
+		     (goto idle))))
     (idle  (enter (begin (start racket-swing)
 			 (set-timeout 1)))
 	   (messages (TimeoutMessage
@@ -102,3 +105,4 @@
 						   ;; @(0 1 -1)))
 			     (stop racket-swing)
 			     (goto normal)))))))
+		     

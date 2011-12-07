@@ -15,6 +15,9 @@
 (define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
 (define-twig-object opponent Child 1 @(0 0 -4))
 
+(within ball
+  (define power 0))
+
 ;; Load files here
 (load "HUDs.scm")
 (load "user.scm")

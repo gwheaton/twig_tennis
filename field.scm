@@ -28,13 +28,23 @@
 
 ;; Code for the ball
 (within ball
-  ;; Force controller
-  (define-force-controller fly ball
-    (+ user.FacingDirection (vector -0.2 0.4 0))
+  ;; Force controllers
+  (define-force-controller userhitlob ball
+    (+ user.FacingDirection (vector -0.1 0.3 0.15))
+    call-activation: 1)
+  (define-force-controller userhitmed ball
+    (+ user.FacingDirection (vector -0.15 0.2 -0.2))
+    call-activation: 1)
+  (define-force-controller userhithard ball
+    (+ user.FacingDirection (vector -0.2 0.1 -0.6))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))
-			 (stop fly)))
+			 (if (running? userhitlob)
+			     (stop userhitlob)
+			     (if (running? userhitmed)
+				 (stop userhitmed)
+				 (stop userhithard)))))
 	   (messages ((game-state-message 'serve)
 		      (begin (set! this.Position @(4 0 7))))
 		     ((game-state-message 'play)
@@ -43,19 +53,39 @@
 	     (begin (set! this.Position @(100 0 100))
 		    (send-game-state 'serve))))
     (play (enter (begin (referee.Say "Ball in play")
-			(start fly)
+			(if (< power 0.3)
+			    (start userhitlob)
+			    (if (< power 1)
+				(start userhitmed)
+				(start userhithard)))
 			(set-timeout 0.1)
 			))
 	  (messages (TimeoutMessage
-		     (stop fly)))
+		     (begin (if (running? userhitlob)
+			     (stop userhitlob)
+			     (if (running? userhitmed)
+				 (stop userhitmed)
+				 (stop userhithard))))))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)
 		   (goto dead))))
     (dead (enter (begin (set-timeout 5)
-			(stop fly)))
+			(if (running? userhitlob)
+			     (stop userhitlob)
+			     (if (running? userhitmed)
+				 (stop userhitmed)
+				 (stop userhithard)))))
 	  (messages (TimeoutMessage
 		     (begin (send-game-state 'serve)
-			    (goto serve)))))))
+			    (goto serve))))))
+  (define start-time 0)
+  (define-state-machine power
+    (start (when (key-down? Keys.Space)
+		      (begin ;;(user.Say (String.Format "{0}" start-time))
+			(set! start-time Physics.Time)))
+	   (messages ((key-up? Keys.Space)
+		      (begin ;;(user.Say (String.Format "{0}" start-time))
+			(set! power (- Physics.Time start-time))))))))    
 
 ;; Code for the bounding box of the field
 (define field-bounds
