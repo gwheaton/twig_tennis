@@ -24,8 +24,12 @@
     (+ (- ball.Position this.Position)
        (- ball.Position this.Position))
     call-activation: 1)
- (define-locomotion-behavior backtocenter
-   (- @(0 0 -5) this.Position)
+ ;;(define-locomotion-behavior backtocenter
+   ;;(- @(0 0 -5) this.Position)
+  ;; call-activation: 1)
+ (define-posture-behavior backtocenter
+   (posture-force pelvis-force:
+		  (* 80 (- @(0 0 -5) this.Position)))
    call-activation: 1)
  (define-posture-behavior pursue-ball-lob
    (posture-force pelvis-force:
@@ -33,7 +37,7 @@
 		   ;;  (/ (magnitude (cross (- this.Position userpos) userfd))
 		;;	(* (magnitude (- this.Position userpos))
 		;;	   (magnitude userfd))))))
-		  (* 130 (vector (- ball.Position.X this.Position.X)
+		  (* 150 (vector (- ball.Position.X this.Position.X)
 				 0 
 				 (- ball.Position.Z this.Position.Z))))
 		  call-activation: 1)
@@ -43,7 +47,7 @@
 		  ;;   (/ (magnitude (cross (- this.Position userpos) userfd))
 		;;	(* (magnitude (- this.Position userpos))
 		;;	   (magnitude userfd))))))
-		  (* 160 (vector (- ball.Position.X this.Position.X)
+		  (* 180 (vector (- ball.Position.X this.Position.X)
 				 0 
 				 (- ball.Position.Z this.Position.Z))))
    call-activation: 1)
@@ -76,7 +80,7 @@
 		       (stop backtocenter))))
 	  (exit (begin (if (running? backtocenter)
 			   (stop backtocenter)))))
-    (move (when (<= ball.Position.Z 2)
+    (move (when (<= ball.Position.Z 1.5)
 	    (begin (if (= hitstrength 0)
 		       (start pursue-ball-lob)
 		       (if (= hitstrength 1)
