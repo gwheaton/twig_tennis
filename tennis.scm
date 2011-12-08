@@ -19,8 +19,8 @@
 ;; for AI calculations
 (define hitstrength 0) ;; for AI, 0 if lob, 1 if med, 2 if hard
 
-(within (list ball shadow)
-  (define-signal ballposX ball.Position.X))
+;;(within (list ball shadow)
+  ;;(define-signal ballposX ball.Position.X))
 
 (within ball
   (define power 0))
