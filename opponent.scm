@@ -29,7 +29,7 @@
   ;; call-activation: 1)
  (define-posture-behavior backtocenter
    (posture-force pelvis-force:
-		  (* 100 (- @(0 0 -5) this.Position)))
+		  (* 100 (- @(0 0 -6) this.Position)))
    call-activation: 1)
  (define-posture-behavior pursue-ball-lob
    (posture-force pelvis-force:
@@ -75,7 +75,7 @@
 		;;	     (set-timeout 0.5))))
 		  ;;  (TimeoutMessage
 		     (goto move)))
-	  (when (<= (distance this.Position @(0 0 -5)) 0.5)
+	  (when (<= (distance this.Position @(0 0 -6)) 0.5)
 	    (begin (if (running? backtocenter)
 		       (stop backtocenter))))
 	  (exit (begin (if (running? backtocenter)
