@@ -15,7 +15,7 @@
 ;;	  (messages (TimeoutMessage
 ;;		     (goto normal))))))
 
-(new-component Wall @(0 0 0) field-width 0.8 0.1) ;; the net
+(new-component Wall @(0 0 0) field-width 1 0.1) ;; the net
   
 (new-component Wall @(5 0 -8) 
 	       @(5 0 8) 
@@ -53,23 +53,23 @@
     call-activation: 1)
   ;; User hit normals
   (define-force-controller userhitlob ball
-    (+ user.FacingDirection (vector 0 2 -2))
+    (+ user.FacingDirection (vector -0.1 2 -2.9))
     call-activation: 1)
   (define-force-controller userhitmed ball
-    (+ user.FacingDirection (vector 0 1.5 -3))
+    (+ user.FacingDirection (vector -0.15 1.5 -3.7))
     call-activation: 1)
   (define-force-controller userhithard ball
-    (+ user.FacingDirection (vector 0 1 -4))
+    (+ user.FacingDirection (vector -0.2 1 -4.7))
     call-activation: 1)
   ;; Force controllers for AI hits
   (define-force-controller AIhitlob ball
-    (+ @(0 0 1) (vector 0.1 1.5 2.3))
+    (+ @(0 0 1) (vector 0.1 1.8 2.4))
     call-activation: 1)
   (define-force-controller AIhitmed ball
-    (+ @(0 0 1) (vector 0.15 1 3.5))
+    (+ @(0 0 1) (vector 0.15 1.4 3.3))
     call-activation: 1)
   (define-force-controller AIhithard ball
-    (+ @(0 0 1) (vector 0.2 0.5 4.7))
+    (+ @(0 0 1) (vector 0.2 1 4.2))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))
@@ -128,10 +128,10 @@
 		    ((game-state-message 'AIhit)
 		     (begin ;; code for calculating which one to use here, globals vars set by opponent when he sends 'AIhit?
 		       (if (= hitstrength 0)
-			   (start AIhitmed)
+			   (start AIhitlob)
 			   (if (= hitstrength 1)
-			       (start AIhithard)
-			       (start AIhitlob)))
+			       (start AIhitmed)
+			       (start AIhithard)))
 		       (set-timeout 0.05))))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)

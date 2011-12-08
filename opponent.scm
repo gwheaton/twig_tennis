@@ -25,7 +25,7 @@
        (- ball.Position this.Position))
     call-activation: 1)
  (define-locomotion-behavior backtocenter
-   (- @(0 0 -4.5) this.Position)
+   (- @(0 0 -5) this.Position)
    call-activation: 1)
  (define-posture-behavior pursue-ball-lob
    (posture-force pelvis-force:
@@ -33,7 +33,7 @@
 		   ;;  (/ (magnitude (cross (- this.Position userpos) userfd))
 		;;	(* (magnitude (- this.Position userpos))
 		;;	   (magnitude userfd))))))
-		  (* 100 (vector (- ball.Position.X this.Position.X)
+		  (* 130 (vector (- ball.Position.X this.Position.X)
 				 0 
 				 (- ball.Position.Z this.Position.Z))))
 		  call-activation: 1)
@@ -43,7 +43,7 @@
 		  ;;   (/ (magnitude (cross (- this.Position userpos) userfd))
 		;;	(* (magnitude (- this.Position userpos))
 		;;	   (magnitude userfd))))))
-		  (* 130 (vector (- ball.Position.X this.Position.X)
+		  (* 160 (vector (- ball.Position.X this.Position.X)
 				 0 
 				 (- ball.Position.Z this.Position.Z))))
    call-activation: 1)
@@ -53,7 +53,7 @@
 		  ;;   (/ (magnitude (cross (- this.Position userpos) userfd))
 		;;	(* (magnitude (- this.Position userpos))
 		;;	   (magnitude userfd))))))
-		  (* 150 (vector (- ball.Position.X this.Position.X)
+		  (* 200 (vector (- ball.Position.X this.Position.X)
 				 0 
 				 (- ball.Position.Z this.Position.Z))))
    call-activation: 1))
@@ -64,25 +64,26 @@
   (define-state-machine opponent-states
     (wait (enter (begin (start backtocenter)))
 	  (messages ((game-state-message 'userhit)
-		     (if (= hitstrength 0)
-			 (set-timeout 0.3)
-			 (if (= hitstrength 1)
-			     (set-timeout 0.4)
-			     (set-timeout 0.5))))
-		    (TimeoutMessage
+		     ;;(if (= hitstrength 0)
+		;;	 (set-timeout 0.3)
+		;;	 (if (= hitstrength 1)
+		;;	     (set-timeout 0.4)
+		;;	     (set-timeout 0.5))))
+		  ;;  (TimeoutMessage
 		     (goto move)))
-	  (when (<= (distance this.Position @(0 0 -4.5)) 0.5)
+	  (when (<= (distance this.Position @(0 0 -5)) 0.5)
 	    (begin (if (running? backtocenter)
 		       (stop backtocenter))))
 	  (exit (begin (if (running? backtocenter)
 			   (stop backtocenter)))))
-    (move (enter (begin (if (= hitstrength 0)
-			    (start pursue-ball-lob)
-			    (if (= hitstrength 1)
-				(start pursue-ball-med)
-				(start pursue-ball-hard)))))
+    (move (when (<= ball.Position.Z 2)
+	    (begin (if (= hitstrength 0)
+		       (start pursue-ball-lob)
+		       (if (= hitstrength 1)
+			   (start pursue-ball-med)
+			   (start pursue-ball-hard)))))
 	  (when (and (<= (distance ball.Position this.SpineTop.Position) 1.8)
-		     (<= ball.Position.Z 0))
+		     (<= ball.Position.Z 0.1))
 	    (begin
 	           (if (running? pursue-ball-lob)
 				(stop pursue-ball-lob)
@@ -113,7 +114,21 @@
 		      (begin ;;(set! ball.Position (+ this.Arms.Right.End.Position
 						   ;; @(0 1 -1)))
 			     (stop racket-swing)
-			     (goto wait)))))))
-		   
+			     (goto wait)))
+		   ((game-state-message 'dead)
+		     (begin (if (running? pursue-ball-lob)
+				(stop pursue-ball-lob)
+				(if (running? pursue-ball-med)
+				    (stop pursue-ball-med)
+				    (stop pursue-ball-hard)))
+			    (goto wait)))
+		    ((game-state-message 'outofbounds)
+		     (begin
+                            (if (running? pursue-ball-lob)
+				(stop pursue-ball-lob)
+				(if (running? pursue-ball-med)
+				    (stop pursue-ball-med)
+				    (stop pursue-ball-hard)))
+			    (goto wait)))))))
     
     
