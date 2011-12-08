@@ -9,7 +9,6 @@
 	      (begin (set! this.Position (vector ball.ballpos.BoxedValue.X
 						 0.1
 						 ball.ballpos.BoxedValue.Z))
-		     (user.Say "Made it to normal")
 		     (set-timeout 0.01)))
 	    (messages (TimeoutMessage
 		       (goto normal))))))
