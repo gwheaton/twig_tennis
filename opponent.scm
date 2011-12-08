@@ -29,7 +29,7 @@
   ;; call-activation: 1)
  (define-posture-behavior backtocenter
    (posture-force pelvis-force:
-		  (* 80 (- @(0 0 -5) this.Position)))
+		  (* 100 (- @(0 0 -5) this.Position)))
    call-activation: 1)
  (define-posture-behavior pursue-ball-lob
    (posture-force pelvis-force:
