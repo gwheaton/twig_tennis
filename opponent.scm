@@ -81,7 +81,8 @@
 			    (if (= hitstrength 1)
 				(start pursue-ball-med)
 				(start pursue-ball-hard)))))
-	  (when (<= (distance ball.Position this.SpineTop.Position) 1.8)
+	  (when (and (<= (distance ball.Position this.SpineTop.Position) 1.8)
+		     (<= ball.Position.Z 0))
 	    (begin
 	           (if (running? pursue-ball-lob)
 				(stop pursue-ball-lob)

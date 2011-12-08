@@ -2,8 +2,21 @@
 (define field-width 10)
 (define field-depth 16)
 
-(new-component Wall @(0 0 0) field-width 0.8 0.1) ;; the net
+;; Cloaked shadow ball
+;;(within shadow
+  ;;(define-state-machine shadow-state
+    ;;(normal (enter
+;;	      (begin (set! this.Position.X ballposX)
+;;		     (user.Say "Made it to normal")
+;;		     (goto wait))))
+  ;;  (wait (enter
+;;	   (begin (user.Say "made it to wait")
+;;		  (set-timeout 0.1)))
+;;	  (messages (TimeoutMessage
+;;		     (goto normal))))))
 
+(new-component Wall @(0 0 0) field-width 0.8 0.1) ;; the net
+  
 (new-component Wall @(5 0 -8) 
 	       @(5 0 8) 
 	       0.1 
@@ -50,13 +63,13 @@
     call-activation: 1)
   ;; Force controllers for AI hits
   (define-force-controller AIhitlob ball
-    (+ @(0 0 1) (vector 0.1 2 2.5))
+    (+ @(0 0 1) (vector 0.1 1.5 2.3))
     call-activation: 1)
   (define-force-controller AIhitmed ball
-    (+ @(0 0 1) (vector 0.15 1.5 3.5))
+    (+ @(0 0 1) (vector 0.15 1 3.5))
     call-activation: 1)
   (define-force-controller AIhithard ball
-    (+ @(0 0 1) (vector 0.2 1 4.5))
+    (+ @(0 0 1) (vector 0.2 0.5 4.7))
     call-activation: 1)
   (define-state-machine ball-state
     (serve (enter (begin (set! this.Position @(4 0 0))
@@ -114,7 +127,11 @@
 			    (set-timeout 0.05)))
 		    ((game-state-message 'AIhit)
 		     (begin ;; code for calculating which one to use here, globals vars set by opponent when he sends 'AIhit?
-		       (start AIhitlob)
+		       (if (= hitstrength 0)
+			   (start AIhitmed)
+			   (if (= hitstrength 1)
+			       (start AIhithard)
+			       (start AIhitlob)))
 		       (set-timeout 0.05))))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)

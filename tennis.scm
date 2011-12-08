@@ -12,15 +12,15 @@
 
 ;; Global declarations, vars
 (define-twig-object ball Ball @(4 0 7) @(0 255 50) 0.1)
+(define-twig-object shadow Ball @(4 0 7) @(255 255 255) 0.05 Cloaked: True)
 (define-twig-object user Child 1 @(3 0 7) @(0 0 -1))
 (define-twig-object opponent Child 1 @(0 0 -4.5))
 
 ;; for AI calculations
 (define hitstrength 0) ;; for AI, 0 if lob, 1 if med, 2 if hard
 
-;;(within (list opponent user)
- ;; (define-signal userpos user.Position) ;; user position when hit
- ;; (define-signal userfd user.FacingDirection)) ;; user facing direciton when hit
+(within (list ball shadow)
+  (define-signal ballposX ball.Position.X))
 
 (within ball
   (define power 0))
