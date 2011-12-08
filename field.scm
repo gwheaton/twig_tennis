@@ -107,6 +107,11 @@
 			    (if (< power 1)
 				(set! hitstrength 1)
 				(set! hitstrength 2)))
+			(if (= hitstrength 0)
+			    (set! ball.Color Color.GreenYellow)
+			    (if (= hitstrength 1)
+				(set! ball.Color Color.Yellow)
+				(set! ball.Color Color.Orange)))
 			(set-timeout 0.05)))
 	  (messages (TimeoutMessage
 		      (begin (if (running? userhitlob)
@@ -135,6 +140,11 @@
 				(if (< power 1)
 				    (set! hitstrength 1)
 				    (set! hitstrength 2)))
+			    (if (= hitstrength 0)
+				(set! ball.Color Color.GreenYellow)
+				(if (= hitstrength 1)
+				    (set! ball.Color Color.Yellow)
+				    (set! ball.Color Color.Orange)))
 			    (set-timeout 0.05)))
 		    ((game-state-message 'AIhit)
 		     (begin ;; code for calculating which one to use here, globals vars set by opponent when he sends 'AIhit?
@@ -143,6 +153,11 @@
 			   (if (= hitstrength 1)
 			       (start AIhitmed)
 			       (start AIhithard)))
+		       (if (= hitstrength 0)
+			   (set! ball.Color Color.GreenYellow)
+			   (if (= hitstrength 1)
+			       (set! ball.Color Color.Yellow)
+			       (set! ball.Color Color.Orange)))
 		       (set-timeout 0.05))))
 	  (when (<= this.Position.Y 0.6)
 	    (begin (send-game-state 'dead)
@@ -183,6 +198,55 @@
 				 0.5)
 			      100
 			      (* field-depth 0.5)))))
+				  
 
+;; Parent behaviors
+(within (list cheerer1 cheerer2 cheerer3)
+	(define-signal timeSpent (true-time true))
+	(define-signal switch (if (= (mod timeSpent 0.1) 0)
+				  true
+				  false))
+	(define-signal onFirstStep (toggle switch false))
+	(define-signal-procedure (move-hand-to arm hand-position)
+	  (limb-command end-acceleration:
+			(* (- hand-position arm.End.Position)
+			   200)))
+	(define-right-arm-behavior cheerRight
+		      (move-hand-to this.Arms.Right
+				    (+ this.Arms.Right.Root.Position
+				       (if onFirstStep
+					   (vector 0.05
+						   this.Arms.Right.Length
+						   0)
+					   (vector -0.3
+						   this.Arms.Right.Length
+						   0))))
+	  activation: 0)
+	(define-left-arm-behavior cheerLeft
+		      (move-hand-to this.Arms.Left
+				    (+ this.Arms.Left.Root.Position
+				       (if onFirstStep
+					   (vector -0.05
+						   this.Arms.Left.Length
+						   0)
+					   (vector 0.3
+						   this.Arms.Left.Length
+						   0))))
+	  activation: 0))
 
-
+;; State machine for cheerers
+(within (list cheerer1 cheerer2 cheerer3)
+	(define-state-machine cheerer-states
+	  (idle (enter (begin (stop cheerLeft)
+			      (stop cheerRight)))
+		(messages ((game-state-message 'AIscore)
+			   (begin (goto cheer)))))
+	  (cheer (enter (begin (start cheerLeft)
+			       (start cheerRight)
+			       (if (= hitstrength 0)
+				   (this.Say "take that!")
+				   (if (= hitstrength 1)
+				       (this.Say "lolololololol")
+				       (this.Say "de-nied")))))
+		 (messages ((game-state-message 'userhit)
+			    (begin (goto idle)))))))
