@@ -112,7 +112,7 @@
 				    (stop pursue-ball-hard)))
 			    (goto wait)))))
     (hit (enter (begin (start racket-swing)
-			  (set-timeout 0.1)
+			  (set-timeout 0.2)
 			  (set! lasthit 1))) ;; set last hit to the AI now
 	   (messages (TimeoutMessage
 		      (begin ;;(set! ball.Position (+ this.Arms.Right.End.Position
