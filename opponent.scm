@@ -29,23 +29,33 @@
    call-activation: 1)
  (define-posture-behavior pursue-ball-lob
    (posture-force pelvis-force:
-		 ;; (* (- this.Position userpos)
+		 ;; (* -100 (* (- this.Position userpos)
 		   ;;  (/ (magnitude (cross (- this.Position userpos) userfd))
 		;;	(* (magnitude (- this.Position userpos))
-		;;	   (magnitude userfd)))))
-		  (* 100 (magnitude (cross userfd (- this.Position userpos)))))
-   call-activation: 1)
+		;;	   (magnitude userfd))))))
+		  (* 100 (vector (- ball.Position.X this.Position.X)
+				 0 
+				 (- ball.Position.Z this.Position.Z))))
+		  call-activation: 1)
  (define-posture-behavior pursue-ball-med
    (posture-force pelvis-force:
-		  (* 200 (- (+ userpos
-			       (* userfd -11))
-			    this.Position)))
+		;; (* -100 (* (- this.Position userpos)
+		  ;;   (/ (magnitude (cross (- this.Position userpos) userfd))
+		;;	(* (magnitude (- this.Position userpos))
+		;;	   (magnitude userfd))))))
+		  (* 130 (vector (- ball.Position.X this.Position.X)
+				 0 
+				 (- ball.Position.Z this.Position.Z))))
    call-activation: 1)
  (define-posture-behavior pursue-ball-hard
    (posture-force pelvis-force:
-		  (* 200 (- (+ userpos
-			       (* userfd -13))
-			    this.Position)))
+		;; (* -100 (* (- this.Position userpos)
+		  ;;   (/ (magnitude (cross (- this.Position userpos) userfd))
+		;;	(* (magnitude (- this.Position userpos))
+		;;	   (magnitude userfd))))))
+		  (* 150 (vector (- ball.Position.X this.Position.X)
+				 0 
+				 (- ball.Position.Z this.Position.Z))))
    call-activation: 1))
 
 
@@ -54,6 +64,12 @@
   (define-state-machine opponent-states
     (wait (enter (begin (start backtocenter)))
 	  (messages ((game-state-message 'userhit)
+		     (if (= hitstrength 0)
+			 (set-timeout 0.3)
+			 (if (= hitstrength 1)
+			     (set-timeout 0.4)
+			     (set-timeout 0.5))))
+		    (TimeoutMessage
 		     (goto move)))
 	  (when (<= (distance this.Position @(0 0 -4.5)) 0.5)
 	    (begin (if (running? backtocenter)

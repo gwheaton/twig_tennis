@@ -17,8 +17,10 @@
 
 ;; for AI calculations
 (define hitstrength 0) ;; for AI, 0 if lob, 1 if med, 2 if hard
-(define userpos @(0 0 0)) ;; user position when hit
-(define userfd @(0 0 0)) ;; user facing direciton when hit
+
+;;(within (list opponent user)
+ ;; (define-signal userpos user.Position) ;; user position when hit
+ ;; (define-signal userfd user.FacingDirection)) ;; user facing direciton when hit
 
 (within ball
   (define power 0))
